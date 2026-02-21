@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Lilly 🖤</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Press Start 2P', cursive;
+    background:black;
+    color:#ff0000;
+    overflow-x:hidden;
+}
+
+/* TAP SCREEN */
+#intro{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:20;
+    cursor:pointer;
+}
+
+#intro h1{
+    font-size:14px;
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:0.3;}
+}
+
+/* VIDEO */
+#bg-video{
+    position:fixed;
+    top:0;
+    left:0;
+    min-width:100%;
+    min-height:100%;
+    object-fit:cover;
+    z-index:-3;
+    filter:brightness(35%) contrast(130%);
+}
+
+/* OVERLAY */
+.overlay{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:linear-gradient(black,#330000,black);
+    opacity:0.6;
+    z-index:-2;
+}
+
+/* 222 */
+.background-222{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:40vw;
+    color:#550000;
+    opacity:0.2;
+    z-index:-1;
+    animation:glitch 1.5s infinite;
+    transition:transform 0.2s;
+}
+
+/* GLITCH */
+@keyframes glitch{
+    0%{text-shadow:5px 0 red,-5px 0 black;}
+    20%{text-shadow:-5px 0 red,5px 0 black;}
+    40%{text-shadow:5px 5px red,-5px -5px black;}
+    60%{text-shadow:-5px -5px red,5px 5px black;}
+    80%{text-shadow:5px -5px red,-5px 5px black;}
+    100%{text-shadow:0 0 red;}
+}
+
+/* HEARTBEAT */
+.pulse{
+    animation:heartbeat 0.6s ease;
+}
+
+@keyframes heartbeat{
+    0%{transform:translate(-50%,-50%) scale(1);}
+    25%{transform:translate(-50%,-50%) scale(1.08);}
+    50%{transform:translate(-50%,-50%) scale(0.98);}
+    75%{transform:translate(-50%,-50%) scale(1.05);}
+    100%{transform:translate(-50%,-50%) scale(1);}
+}
+
+/* CONTAINER */
+.container{
+    text-align:center;
+    padding-top:100px;
+}
+
+/* FRAMES STACKED */
+.frames{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:40px;
+}
+
+/* SAME SIZE FRAMES */
+.pixel-frame{
+    width:300px;
+    height:300px;
+    padding:15px;
+    background:black;
+    border:6px solid #8b0000;
+    box-shadow:
+        0 0 0 4px #000,
+        0 0 0 8px #550000,
+        0 0 0 12px #000;
+    opacity:0;
+    transform:scale(0.8);
+    transition:0.6s;
+}
+
+.pixel-frame.show{
+    opacity:1;
+    transform:scale(1);
+}
+
+.pixel-frame:active{
+    box-shadow:
+        0 0 10px red,
+        0 0 20px #ff0000,
+        0 0 30px #aa0000;
+}
+
+.pixel-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    image-rendering:pixelated;
+}
+
+/* MESSAGE */
+#message{
+    margin-top:60px;
+    font-size:11px;
+    padding:20px;
+    line-height:1.8;
+}
+
+/* SECRET MESSAGE */
+#secret-message{
+    display:none;
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    background:black;
+    border:4px solid #8b0000;
+    padding:20px;
+    font-size:10px;
+    color:#ff0000;
+    z-index:30;
+}
+
+.secret-show{
+    display:block;
+    animation:secretGlitch 0.6s steps(6) forwards,
+              flicker 1.5s infinite;
+}
+
+@keyframes secretGlitch{
+    0%{transform:translateX(-50%) skewX(20deg);opacity:0;}
+    20%{transform:translateX(-50%) skewX(-20deg);opacity:1;}
+    40%{transform:translateX(-50%) skewX(10deg);}
+    60%{transform:translateX(-50%) skewX(-10deg);}
+    100%{transform:translateX(-50%) skewX(0deg);}
+}
+
+@keyframes flicker{
+    0%{opacity:1;}
+    50%{opacity:0.6;}
+    100%{opacity:1;}
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<div id="intro"><h1>TAP TO ENTER 222</h1></div>
+
+<video loop playsinline id="bg-video">
+<source src="Background Video.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+<div class="background-222">222</div>
+
+<div class="container">
+
+<div class="frames">
+<div class="pixel-frame"><img src="Image 1.png"></div>
+<div class="pixel-frame"><img src="Image 2.png"></div>
+<div class="pixel-frame"><img src="Image 3.png"></div>
+<div class="pixel-frame"><img src="Image 4.png"></div>
+</div>
+
+<div id="message"></div>
+
+</div>
+
+<audio id="bg-music" loop>
+<source src="Background music file.mp3" type="audio/mp3">
+</audio>
+
+<div id="secret-message">
+i will never stop loving you dear dan
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+const intro=document.getElementById("intro");
+const video=document.getElementById("bg-video");
+const music=document.getElementById("bg-music");
+const number222=document.querySelector(".background-222");
+
+intro.addEventListener("click",()=>{
+intro.style.display="none";
+video.play();
+music.play();
+startTyping();
+startImages();
+});
+
+/* Typing */
+const text=`for your eyes only : my lilly, deedy, dan, obd, kiddy, beauty, and kitten 
+
+I wish u always a life full of happiness, hip hop, hustles, love and fun 
+
+And as always I'm gifting you some of my pixels for your b-day so we can remember our pixelated kisses from separated places`;
+
+let i=0;
+function startTyping(){
+function type(){
+if(i<text.length){
+document.getElementById("message").innerHTML+=text.charAt(i);
+i++;
+setTimeout(type,40);
+}}
+type();
+}
+
+/* Sequential Images */
+function startImages(){
+const frames=document.querySelectorAll(".pixel-frame");
+frames.forEach((frame,index)=>{
+setTimeout(()=>{
+frame.classList.add("show");
+},800*(index+1));
+});
+}
+
+/* Heartbeat */
+music.addEventListener("play",()=>{
+setInterval(()=>{
+number222.classList.add("pulse");
+setTimeout(()=>number222.classList.remove("pulse"),300);
+},800);
+});
+
+/* Secret Double Tap */
+let tapCount=0;
+const secret=document.getElementById("secret-message");
+
+number222.addEventListener("click",()=>{
+tapCount++;
+if(tapCount===2){
+secret.classList.add("secret-show");
+setTimeout(()=>secret.classList.remove("secret-show"),5000);
+tapCount=0;
+}
+setTimeout(()=>tapCount=0,800);
+});
+
+/* Pixel Hearts */
+const canvas=document.getElementById("confetti");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let hearts=[];
+for(let i=0;i<80;i++){
+hearts.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:6,
+speed:Math.random()*2+1,
+color:Math.random()>0.5?"#ff0000":"#000000"
+});
+}
+
+function drawHeart(x,y,size,color){
+ctx.fillStyle=color;
+ctx.fillRect(x,y,size,size);
+ctx.fillRect(x-size,y,size,size);
+ctx.fillRect(x+size,y,size,size);
+ctx.fillRect(x-size,y-size,size,size);
+ctx.fillRect(x+size,y-size,size,size);
+ctx.fillRect(x,y+size,size,size);
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+hearts.forEach(h=>{
+drawHeart(h.x,h.y,h.size,h.color);
+h.y+=h.speed;
+if(h.y>canvas.height){
+h.y=-10;
+h.x=Math.random()*canvas.width;
+}});
+requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
